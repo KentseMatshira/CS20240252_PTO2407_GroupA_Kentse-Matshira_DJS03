@@ -37,3 +37,60 @@ After completing the tasks, prepare a brief presentation for your coaching group
 Submit the refactored version of the "Book Connect" application, including all HTML, CSS, and JavaScript files. Ensure that your code is well-documented and adheres to the specified Styleguides. Include a written report covering the discussion and reflection points outlined above.
 
 Make sure to submit your project to the LMS on the DJS03 Project Tab.
+Usage:
+Day Night Apply Theme
+Challenges and Solutions
+Loading Variables:
+-Challenge: Variables and attributes needed to be dynamically loaded and updated.
+
+Solution: Used appropriate methods to ensure variables are correctly set and accessed. Ensured that attributes were properly assigned and updated in the custom element.
+Callback Function Timing:
+Challenge: Ensuring that event listeners and callbacks functioned correctly after rendering.
+Solution: Added event listeners after the component was fully rendered, and used lifecycle hooks or state management to handle timing issues.
+Dynamic Content Handling:
+Challenge: Handling dynamic content and updates within the custom components.
+Solution: Used document fragments and efficient DOM manipulation techniques to manage and update the content smoothly.
+Future Components
+Here are three additional components that could be converted into web components:
+
+Pagination Controls:
+Purpose: Manage pagination for the book list, allowing users to navigate between pages.
+
+Notification Banner:
+Purpose: Display notifications or messages to users, such as success or error messages.
+
+User Profile Widget:
+Purpose: Display user profile information and settings in a modular way.
+
+Conclusion
+By creating modular web components, we have improved the structure and maintainability of our application. Each component is designed to handle specific functionality, making the codebase more organized and easier to manage. The challenges faced were addressed through careful implementation and testing, ensuring that the components work seamlessly within the app.
+
+About
+[DJS03] Starter Code for Module 3's Project Submission
+Usage:
+Day Night Apply Theme
+Challenges and Solutions
+Loading Variables:
+-Challenge: Variables and attributes needed to be dynamically loaded and updated.
+
+Solution: Used appropriate methods to ensure variables are correctly set and accessed. Ensured that attributes were properly assigned and updated in the custom element.
+Callback Function Timing:
+Challenge: Ensuring that event listeners and callbacks functioned correctly after rendering.
+Solution: Added event listeners after the component was fully rendered, and used lifecycle hooks or state management to handle timing issues.
+Dynamic Content Handling:
+Challenge: Handling dynamic content and updates within the custom components.
+Solution: Used document fragments and efficient DOM manipulation techniques to manage and update the content smoothly.
+Future Components
+Here are three additional components that could be converted into web components:
+
+Pagination Controls:
+Purpose: Manage pagination for the book list, allowing users to navigate between pages.
+
+Notification Banner:
+Purpose: Display notifications or messages to users, such as success or error messages.
+
+User Profile Widget:
+Purpose: Display user profile information and settings in a modular way.
+
+Conclusion
+By creating modular web components, we have improved the structure and maintainability of our application. Each component is designed to handle specific functionality, making the codebase more organized and easier to manage. The challenges faced were addressed through careful implementation and testing, ensuring that the components work seamlessly within the app.
