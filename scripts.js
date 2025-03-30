@@ -103,10 +103,17 @@ for (const [id, name] of Object.entries(authors)) {
 
 document.querySelector('[data-search-authors]').appendChild(authorsHtml)
 
-if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.querySelector('[data-settings-theme]').value = 'night'
-    document.documentElement.style.setProperty('--color-dark', '255, 255, 255');
-    document.documentElement.style.setProperty('--color-light', '10, 10, 20');
+const themeElement = document.querySelector('[data-settings-theme]');
+ 
+ // Check if the theme element exists and is a select element
+ if (themeElement && themeElement instanceof HTMLSelectElement) {
+     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+         themeElement.value = 'night';
+         document.documentElement.style.setProperty('--color-dark', '255, 255, 255');
+         document.documentElement.style.setProperty('--color-light', '10, 10, 20');
+     } else {
+         console.error('Theme element not found or is not a select element.');
+     }
 } else {
     document.querySelector('[data-settings-theme]').value = 'day'
     document.documentElement.style.setProperty('--color-dark', '10, 10, 20');
