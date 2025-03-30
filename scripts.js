@@ -61,7 +61,13 @@ document.querySelector('[data-list-items]').appendChild(starting)
          console.error(`Element with selector "${selectElement}" not found.`);
      }
 
-
+/**
+  * Render a list of books in container.
+  * @param {Array<object>} booksToRender
+  * @param {string} container
+  * @param {number} page
+  * @param {number} booksPerPage
+  */
  
  function renderBooks(booksToRender, container, page, booksPerPage) {
      const fragment = document.createDocumentFragment();
@@ -119,14 +125,17 @@ const themeElement = document.querySelector('[data-settings-theme]');
     document.documentElement.style.setProperty('--color-dark', '10, 10, 20');
     document.documentElement.style.setProperty('--color-light', '255, 255, 255');
 }
-
-document.querySelector('[data-list-button]').innerText = `Show more (${books.length - BOOKS_PER_PAGE})`
-document.querySelector('[data-list-button]').disabled = (matches.length - (page * BOOKS_PER_PAGE)) > 0
-
-document.querySelector('[data-list-button]').innerHTML = `
-    <span>Show more</span>
-    <span class="list__remaining"> (${(matches.length - (page * BOOKS_PER_PAGE)) > 0 ? (matches.length - (page * BOOKS_PER_PAGE)) : 0})</span>
-`
+// Handle the "Show more" button state
+ const listButton = document.querySelector('[data-list-button]');
+ if (listButton instanceof HTMLButtonElement) {
+     listButton.innerText = `Show more (${books.length - BOOKS_PER_PAGE})`;
+     listButton.disabled = (matches.length - (page * BOOKS_PER_PAGE)) <= 0;
+ 
+listButton.innerHTML = `
+         <span>Show more</span>
+         <span class="list__remaining"> (${(matches.length - (page * BOOKS_PER_PAGE)) > 0 ? (matches.length - (page * BOOKS_PER_PAGE)) : 0})</span>
+     `;
+ }
 
 document.querySelector('[data-search-cancel]').addEventListener('click', () => {
     document.querySelector('[data-search-overlay]').open = false
