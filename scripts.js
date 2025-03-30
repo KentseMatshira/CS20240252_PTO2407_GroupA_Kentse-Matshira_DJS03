@@ -41,20 +41,27 @@ class Book {
 
 document.querySelector('[data-list-items]').appendChild(starting)
 
-const genreHtml = document.createDocumentFragment()
-const firstGenreElement = document.createElement('option')
-firstGenreElement.value = 'any'
-firstGenreElement.innerText = 'All Genres'
-genreHtml.appendChild(firstGenreElement)
+/**
+  * Dynamic filter options (dropdown)
+  * @param {object} data
+  * @param {string} firstOptionText
+  * @param {string} selectElement
+  */
+ function renderOptions(selectElement, data, firstOptionText) {
+     const fragment = document.createDocumentFragment();
+     const firstOption = document.createElement('option');
+     firstOption.value = 'any';
+     firstOption.innerText = firstOptionText;
+     fragment.appendChild(firstOption);
+ 
+     // Null check before appending the fragment
+     if (targetElement) {
+         targetElement.appendChild(fragment);
+     } else {
+         console.error(`Element with selector "${selectElement}" not found.`);
+     }
 
-for (const [id, name] of Object.entries(genres)) {
-    const element = document.createElement('option')
-    element.value = id
-    element.innerText = name
-    genreHtml.appendChild(element)
-}
-  };
- };
+
  
  function renderBooks(booksToRender, container, page, booksPerPage) {
      const fragment = document.createDocumentFragment();
