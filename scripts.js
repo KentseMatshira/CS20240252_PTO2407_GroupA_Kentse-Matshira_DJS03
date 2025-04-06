@@ -1,28 +1,10 @@
 // @ts-check
 
-import { books, authors, genres, BOOKS_PER_PAGE } from './data.js';
 
-class BookPreview {
-    constructor(book) {
-        this.book = book;
-        this.element = this.createElement();
-    }
+import { books, genres, BOOKS_PER_PAGE } from "./data.js";
+import { BookPreview } from "./components/book-preview.js";
 
-    createElement() {
-        const { author, id, image, title } = this.book;
-        const element = document.createElement('button');
-        element.classList.add('preview');
-        element.setAttribute('data-preview', id);
-        element.innerHTML = `
-            <img class="preview__image" src="${image}" />
-            <div class="preview__info">
-                <h3 class="preview__title">${title}</h3>
-                <div class="preview__author">${authors[author]}</div>
-            </div>
-        `;
-        return element;
-    }
-}
+
 // Initialize state variables
 let page = 1;
 let matches = books;
@@ -56,7 +38,7 @@ const renderInitialBooks = () => {
     const starting = document.createDocumentFragment();
     matches.slice(0, BOOKS_PER_PAGE).forEach(book => {
         const bookPreview = new BookPreview(book);
-        starting.appendChild(bookPreview.element);
+        starting.appendChild(bookPreview);
     });
     selectors.listItems.appendChild(starting);
 };
@@ -155,77 +137,76 @@ const setupEventListeners = () => {
         selectors.settingsOverlay.open = false;
     });
 
-    selectors.searchForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const filters = Object.fromEntries(formData);
-        const result = [];
+  // Handler for search form submission
+const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const filters = Object.fromEntries(formData);
+    const result = books.filter(book => 
+        (filters.title.trim() === '' || book.title.toLowerCase().includes(filters.title.toLowerCase())) &&
+        (filters.author === 'any' || book.author === filters.author) &&
+        (filters.genre === 'any' || book.genres.includes(filters.genre))
+    );
 
-        for (const book of books) {
-            const genreMatch = filters.genre === 'any' || book.genres.includes(filters.genre);
-            if (
-                (filters.title.trim() === '' || book.title.toLowerCase().includes(filters.title.toLowerCase())) &&
-                (filters.author === 'any' || book.author === filters.author) &&
-                genreMatch
-            ) {
-                result.push(book);
-            }
-        }
+    page = 1;
+    matches = result;
 
-        page = 1;
-        matches = result;
+    if (result.length < 1) {
+        selectors.listMessage.classList.add('list__message_show');
+    } else {
+        selectors.listMessage.classList.remove('list__message_show');
+    }
 
-        if (result.length < 1) {
-            selectors.listMessage.classList.add('list__message_show');
-        } else {
-            selectors.listMessage.classList.remove('list__message_show');
-        }
+    renderFilteredBooks(result);
+    updateShowMoreButton();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    selectors.searchOverlay.open = false;
+};
 
-        selectors.listItems.innerHTML = '';
-        const newItems = document.createDocumentFragment();
-        result.slice(0, BOOKS_PER_PAGE).forEach(book => {
-            const bookPreview = new BookPreview(book);
-            newItems.appendChild(bookPreview.element);
-        });
-
-        selectors.listItems.appendChild(newItems);
-        updateShowMoreButton();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        selectors.searchOverlay.open = false;
+// Render filtered books based on search results
+const renderFilteredBooks = (result) => {
+    selectors.listItems.innerHTML = '';
+    const newItems = document.createDocumentFragment();
+    result.slice(0, BOOKS_PER_PAGE).forEach(book => {
+        const bookPreview = new BookPreview();
+        bookPreview.book = book; // Set the book property
+        newItems.appendChild(bookPreview);
     });
+    selectors.listItems.appendChild(newItems);
+};
 
-    selectors.listButton.addEventListener('click', () => {
-        const fragment = document.createDocumentFragment();
-        matches.slice(page * BOOKS_PER_PAGE, (page + 1) * BOOKS_PER_PAGE).forEach(book => {
-            const bookPreview = new BookPreview(book);
-            fragment.appendChild(bookPreview.element);
-        });
-        selectors.listItems.appendChild(fragment);
-        page += 1;
-        updateShowMoreButton();
+// Load more books on button click
+const loadMoreBooks = () => {
+    const fragment = document.createDocumentFragment();
+    matches.slice(page * BOOKS_PER_PAGE, (page + 1) * BOOKS_PER_PAGE).forEach(book => {
+        const bookPreview = new BookPreview();
+        bookPreview.book = book;
+        fragment.appendChild(bookPreview);
     });
+    selectors.listItems.appendChild(fragment);
+    page += 1;
+    updateShowMoreButton();
+};
 
-    selectors.listItems.addEventListener('click', (event) => {
-        const pathArray = Array.from(event.path || event.composedPath());
-        let active = null;
+// Handle book click event to display details
+const handleBookClick = (event) => {
+    const pathArray = Array.from(event.path || event.composedPath());
+    const active = pathArray.find(node => node?.dataset?.preview && books.find(book => book.id === node.dataset.preview));
 
-        for (const node of pathArray) {
-            if (active) break;
+    if (active) {
+        const book = books.find(book => book.id === active.dataset.preview);
+        displayBookDetails(book);
+    }
+};
 
-            if (node?.dataset?.preview) {
-                active = books.find(book => book.id === node.dataset.preview);
-            }
-        }
-
-        if (active) {
-            selectors.listActive.open = true;
-            selectors.listBlur.src = active.image;
-            selectors.listImage.src = active.image;
-            selectors.listTitle.innerText = active.title;
-            selectors.listSubtitle.innerText = `${authors[active.author]} (${new Date(active.published).getFullYear()})`;
-            selectors.listDescription.innerText = active.description;
-        }
-    });
+// Display the details of the clicked book
+const displayBookDetails = (book) => {
+    selectors.listActive.open = true;
+    selectors.listBlur.src = book.image;
+    selectors.listImage.src = book.image;
+    selectors.listTitle.innerText = book.title;
+    selectors.listSubtitle.innerText = `${authors[book.author]} (${new Date(book.published).getFullYear()})`;
+    selectors.listDescription.innerText = book.description;
 };
 
 // Initialize the application
